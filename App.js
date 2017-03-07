@@ -1,60 +1,33 @@
-import React from 'react';
-import Header from './Header';
-import TableRow from './TableRow';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { addTodo } from './actions/actions'
 
-export default class App extends React.Component{
-    constructor() {
-        super();
+import AddTodo from './components/AddTodo'
+import TodoList from './components/TodoList'
 
-        this.state = {
-            header: "Header from state...",
-            content: "Content from state...",
-            data:
-                [
-                    {
-                        "id":1,
-                        "name":"Foo",
-                        "age":"20"
-                    },
+class App extends Component {
+    render() {
+        const { dispatch, visibleTodos } = this.props
 
-                    {
-                        "id":2,
-                        "name":"Bar",
-                        "age":"30"
-                    },
+        return (
+            <div>
 
-                    {
-                        "id":3,
-                        "name":"Baz",
-                        "age":"40"
-                    }
-                ]
-        }
-    }
+                <AddTodo
+                    onAddClick = {text =>
+               dispatch(addTodo(text))}
+                    />
 
-    render(){
-        const rows = this.state.data.map((person, i)=>
-            <TableRow key={person.id} data={person} />
-        );
-        
-        return(
-          <div>
-              <Header/>
-            <table>
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
-              <div>
-                  <h1>{this.props.headerProp}</h1>
-                  <h2>{this.props.contentProp}</h2>
-              </div>
-          </div>
-        );
+                <TodoList todos = {visibleTodos}/>
+
+            </div>
+        )
     }
 }
 
-App.defaultProps = {
-    headerProp: "Header from props...",
-    contentProp:"Content from props..."
+function select(state) {
+    return {
+        visibleTodos: state.todos
+    }
 }
+
+export default connect(select)(App)
